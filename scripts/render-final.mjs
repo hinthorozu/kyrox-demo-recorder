@@ -24,6 +24,31 @@ function run(command, args) {
   });
 }
 
+function capture(command, args) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { stdio: ["ignore", "pipe", "pipe"] });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => { stdout += chunk; });
+    child.stderr.on("data", (chunk) => { stderr += chunk; });
+    child.on("error", reject);
+    child.on("exit", (code) => {
+      if (code === 0) resolve(stdout.trim());
+      else reject(new Error(`${command} exited with code ${code}: ${stderr.trim()}`));
+    });
+  });
+}
+
+async function probeDurationSeconds(file) {
+  const value = await capture("ffprobe", [
+    "-v", "error",
+    "-show_entries", "format=duration",
+    "-of", "default=noprint_wrappers=1:nokey=1",
+    file,
+  ]);
+  return Number(value);
+}
+
 if (!(await exists(INPUT))) {
   throw new Error(`Missing source video: ${INPUT}`);
 }
@@ -33,6 +58,11 @@ const args = ["-y", "-i", INPUT];
 if (VOICEOVER_FILE) {
   if (!(await exists(VOICEOVER_FILE))) {
     throw new Error(`VOICEOVER_FILE does not exist: ${VOICEOVER_FILE}`);
+  }
+  const tailSeconds = Math.max(0, Number(process.env.VOICEOVER_TAIL_SECONDS || 0));
+  if (tailSeconds > 0) {
+    const voiceDuration = await probeDurationSeconds(VOICEOVER_FILE);
+    args.push("-t", String((voiceDuration + tailSeconds).toFixed(3)));
   }
   args.push(
     "-i", VOICEOVER_FILE,
