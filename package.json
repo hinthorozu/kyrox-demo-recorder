@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "record:fair-crm": "node scripts/record-fair-crm.mjs",
-    "check": "node --check scripts/record-fair-crm.mjs && node --check scripts/render-final.mjs",
-    "render:fair-crm": "node scripts/render-final.mjs"
+    "check": "node --check scripts/record-fair-crm.mjs && node --check scripts/render-final.mjs && node --check scripts/generate-piper-voiceover.mjs",
+    "render:fair-crm": "node scripts/render-final.mjs",
+    "voice:piper": "node scripts/generate-piper-voiceover.mjs"
   },
   "dependencies": {
     "playwright": "1.49.1"
