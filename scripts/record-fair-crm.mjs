@@ -51,9 +51,9 @@ try {
   await page.getByRole("heading", { name: "Giriş" }).waitFor({ state: "visible", timeout: 15000 });
   await pause(page, 1200);
 
-  await page.getByLabel("E-posta").fill(DEMO_EMAIL);
+  await page.locator("#login-email").fill(DEMO_EMAIL);
   await pause(page, 500);
-  await page.getByLabel("Şifre").fill(DEMO_PASSWORD);
+  await page.locator("#login-password").fill(DEMO_PASSWORD);
   await pause(page, 700);
   await clickVisible(page.getByRole("button", { name: "Giriş Yap" }), "Giriş Yap");
 
