@@ -1,0 +1,52 @@
+name: Record FAIR CRM Demo Auto
+
+on:
+  push:
+    branches:
+      - ROG
+    paths:
+      - "record-requests/**"
+
+permissions:
+  contents: read
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      BASE_URL: https://fuar.kyrox.studio
+      DEMO_EMAIL: ${{ secrets.DEMO_EMAIL }}
+      DEMO_PASSWORD: ${{ secrets.DEMO_PASSWORD }}
+      DEMO_CUSTOMER_NAME: Kyrox Studio Ar-Ge Hizmetleri A.Ş.
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Validate recorder
+        run: npm run check
+
+      - name: Record demo
+        run: npm run record:fair-crm
+
+      - name: Upload video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fair-crm-demo-video
+          path: output/*.webm
+          if-no-files-found: error
+          retention-days: 7
