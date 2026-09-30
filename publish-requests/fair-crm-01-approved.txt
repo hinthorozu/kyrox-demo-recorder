@@ -1,0 +1,1 @@
+Publish the exact approved FAIR CRM tutorial from workflow run 36709594240 as permanent release assets. Keep only the silent and Piper-voiced MP4 files.
