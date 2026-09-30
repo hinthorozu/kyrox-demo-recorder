@@ -1,0 +1,53 @@
+{
+  "id": "fair-crm-02",
+  "title": "Sahne Oluşturma Ayarları",
+  "language": "tr-TR",
+  "visualTemplate": "kyrox-orange-v1",
+  "sourceVideo": "fair-crm-02-sahne-olusturma.webm",
+  "finalVideo": "fair-crm-02-sahne-olusturma.mp4",
+  "voiceover": {
+    "enabled": true,
+    "segments": [
+      {
+        "anchor": "setup-ready",
+        "text": "Bu ekranda stand sahnesinin temel özelliklerini belirliyoruz. Stand tipi, ölçüler, zemin ve isteğe bağlı depo ayarları burada hazırlanır."
+      },
+      {
+        "anchor": "stand-type-selected",
+        "text": "Stand Tipi bölümünde sahnenin duvar düzenini seçiyoruz. Bu örnekte arka duvar ve iki yan duvardan oluşan U Stand kullanıyoruz."
+      },
+      {
+        "anchor": "dimensions-set",
+        "text": "X ve Y alanları standın aktif genişlik ve derinliğini santimetre olarak belirler. Burada on metreye beş metrelik bir alan oluşturuyoruz. Ölçüler elli santimetre ve katları olmalıdır."
+      },
+      {
+        "anchor": "floor-selected",
+        "text": "Zemin Kaplaması menüsünden standın zemin malzemesini seçiyoruz. Bu örnekte yüz santimetreye yüz santimetre karolaj kullanıyoruz."
+      },
+      {
+        "anchor": "depot-enabled",
+        "text": "Depo eklensin seçeneği, standın içine otomatik bir kapalı depo alanı ekler."
+      },
+      {
+        "anchor": "depot-size-selected",
+        "text": "Depo ölçüsünü açılır menüden belirliyoruz. Bu sahnede iki metreye bir metre depo seçiyoruz."
+      },
+      {
+        "anchor": "depot-contents-selected",
+        "text": "Depo içeriği seçildiğinde mini buzdolabı, kettle, askılık ve çöp kutusu depoya otomatik olarak eklenir."
+      },
+      {
+        "anchor": "create-stage-clicked",
+        "text": "Ayarlarımız tamamlandığında Sahneyi Oluştur butonuna basıyoruz."
+      },
+      {
+        "anchor": "project-name",
+        "text": "Yeni stand için bir proje adı giriyoruz. Stand tipi ve ölçüler proje adına sistem tarafından otomatik olarak eklenir."
+      },
+      {
+        "anchor": "scene-created",
+        "text": "Sahnemiz hazır. U Stand duvarları, on metreye beş metre aktif alan, karolaj zemin, iki metreye bir metre depo ve seçtiğimiz depo içerikleri otomatik olarak oluşturuldu."
+      }
+    ]
+  }
+}
