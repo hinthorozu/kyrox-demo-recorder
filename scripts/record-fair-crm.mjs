@@ -69,25 +69,14 @@ try {
   await page.getByRole("heading", { name: "Yeni Müşteri" }).waitFor({ state: "visible", timeout: 15000 });
   await pause(page, 700);
 
-  await page.getByLabel("Müşteri Adı").fill(CUSTOMER_NAME);
+  await page.locator("#customer-display-name").fill(CUSTOMER_NAME);
   await pause(page, 350);
-  await page.getByLabel("Ticari Ünvan").fill(CUSTOMER_NAME);
+  await page.locator("#customer-trade-name").fill(CUSTOMER_NAME);
   await pause(page, 350);
 
-  const typeField = page.getByLabel("Tip");
-  if (await typeField.count()) {
-    await typeField.selectOption("exhibitor");
-  }
-
-  const countryField = page.getByLabel("Ülke");
-  if (await countryField.count()) {
-    await countryField.fill("Türkiye");
-  }
-
-  const cityField = page.getByLabel("Şehir");
-  if (await cityField.count()) {
-    await cityField.fill("İstanbul");
-  }
+  await page.locator("#customer-type").selectOption("exhibitor");
+  await page.locator("#customer-country").fill("Türkiye");
+  await page.locator("#customer-city").fill("İstanbul");
 
   await pause(page, 900);
   await clickVisible(page.getByRole("button", { name: "Kaydet", exact: true }), "Müşteri Kaydet");
@@ -96,15 +85,24 @@ try {
   await page.getByRole("heading", { name: CUSTOMER_NAME }).waitFor({ state: "visible", timeout: 15000 });
   await pause(page, 1600);
 
-  const standTab = page.getByRole("tab", { name: /Standlar/ });
-  if (await standTab.count()) {
-    await clickVisible(standTab, "Standlar sekmesi");
-  } else {
-    await clickVisible(page.getByText("Standlar", { exact: true }).first(), "Standlar sekmesi");
-  }
+  await clickVisible(page.locator("#tab-projects"), "Standlar sekmesi");
+  await page.locator("#panel-projects").waitFor({ state: "visible", timeout: 15000 });
   await pause(page, 1200);
 
-  await clickVisible(page.getByRole("button", { name: "Yeni Proje" }), "Yeni Proje");
+  // FAIR CRM intentionally opens Stand projects in a new tab. For one continuous
+  // tutorial recording, keep the exact target route but normalize that navigation
+  // into the current tab before pressing the real UI button.
+  await page.evaluate(() => {
+    window.open = (url) => {
+      if (typeof url === "string") window.location.assign(url);
+      return window;
+    };
+  });
+
+  const newProjectButton = page
+    .locator("#panel-projects .table-toolbar")
+    .getByRole("button", { name: "Yeni Proje", exact: true });
+  await clickVisible(newProjectButton, "Yeni Proje");
 
   await page.waitForURL(/\/stand-projects\/new\?customerId=/, { timeout: 30000 });
   await page.getByText("Yeni stand projesi", { exact: true }).waitFor({ state: "visible", timeout: 20000 });
