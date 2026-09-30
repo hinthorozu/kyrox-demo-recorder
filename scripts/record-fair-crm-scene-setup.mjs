@@ -183,7 +183,7 @@ try {
   await uStand.waitFor({ state: "visible", timeout: 20000 });
 
   mark("setup-ready");
-  await pause(page, 3200);
+  await pause(page, 6500);
 
   // Stand type: briefly show all alternatives, then choose U Stand.
   for (const type of ["back-wall", "u-stand", "l-left", "l-right", "island"]) {
@@ -192,17 +192,17 @@ try {
   }
   await clickFocus(page, uStand, { strong: true, holdMs: 800 });
   mark("stand-type-selected");
-  await pause(page, 4200);
+  await pause(page, 6500);
 
   await fillFocus(page, frame.locator("#stand-size-x"), "1000");
   await fillFocus(page, frame.locator("#stand-size-y"), "500");
   mark("dimensions-set");
-  await pause(page, 5200);
+  await pause(page, 10200);
 
   const floor = frame.locator("#floor-type");
   await selectFocus(page, floor, "karolaj", { holdOpenMs: 1200 });
   mark("floor-selected");
-  await pause(page, 4400);
+  await pause(page, 7800);
 
   const depotEnabled = frame.locator("#auto-depot-enabled");
   await clickFocus(page, depotEnabled, { strong: true, holdMs: 700 });
@@ -212,7 +212,7 @@ try {
   const depotSize = frame.locator("#auto-depot-size");
   await selectFocus(page, depotSize, "200x100", { holdOpenMs: 1200 });
   mark("depot-size-selected");
-  await pause(page, 4200);
+  await pause(page, 4700);
 
   const depotContents = frame.locator("#auto-depot-contents");
   await clickFocus(page, depotContents, { strong: true, holdMs: 700 });
@@ -220,7 +220,7 @@ try {
   await showFocus(page, depotNote, { holdMs: 1100 });
   await clearFocus(page);
   mark("depot-contents-selected");
-  await pause(page, 6000);
+  await pause(page, 6600);
 
   const createStage = frame.locator("#create-stage");
   await clickFocus(page, createStage, { strong: true, holdMs: 950 });
@@ -228,7 +228,7 @@ try {
 
   const projectNameInput = frame.locator('input[name="projectName"]');
   await projectNameInput.waitFor({ state: "visible", timeout: 10000 });
-  await pause(page, 1300);
+  await pause(page, 3100);
   await fillFocus(page, projectNameInput, "Kyrox Demo Sahne");
   mark("project-name");
   await pause(page, 3600);
@@ -242,7 +242,7 @@ try {
 
   await showFocus(page, frame.locator("#viewport"), { strong: true, holdMs: 1000 });
   await clearFocus(page);
-  await pause(page, 9000);
+  await pause(page, 14000);
 
   console.log("✓ FAIR CRM sahne oluşturma tutorial tamamlandı");
 } finally {
