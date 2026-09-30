@@ -20,6 +20,31 @@ function run(command, args, input = null) {
   });
 }
 
+function capture(command, args) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { stdio: ["ignore", "pipe", "pipe"] });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => { stdout += chunk; });
+    child.stderr.on("data", (chunk) => { stderr += chunk; });
+    child.on("error", reject);
+    child.on("exit", (code) => {
+      if (code === 0) resolve(stdout.trim());
+      else reject(new Error(`${command} exited with code ${code}: ${stderr.trim()}`));
+    });
+  });
+}
+
+async function probeDurationMs(file) {
+  const value = await capture("ffprobe", [
+    "-v", "error",
+    "-show_entries", "format=duration",
+    "-of", "default=noprint_wrappers=1:nokey=1",
+    file,
+  ]);
+  return Math.round(Number(value) * 1000);
+}
+
 const scenario = JSON.parse(await fs.readFile(SCENARIO_FILE, "utf8"));
 const timeline = JSON.parse(await fs.readFile(TIMELINE_FILE, "utf8"));
 await fs.mkdir(VOICE_DIR, { recursive: true });
@@ -35,8 +60,23 @@ for (let index = 0; index < segments.length; index += 1) {
 
   const wav = path.join(VOICE_DIR, `segment-${String(index + 1).padStart(2, "0")}.wav`);
   await run(PIPER_BIN, ["--model", PIPER_MODEL, "--output_file", wav], segment.text + "\n");
-  rendered.push({ wav, atMs, anchor: segment.anchor });
-  console.log(`✓ Voice ${segment.anchor} @ ${atMs}ms`);
+  const durationMs = await probeDurationMs(wav);
+  rendered.push({ wav, atMs, anchor: segment.anchor, durationMs });
+  console.log(`✓ Voice ${segment.anchor} @ ${atMs}ms (${durationMs}ms)`);
+}
+
+const MIN_GAP_MS = 350;
+for (let index = 0; index < rendered.length - 1; index += 1) {
+  const current = rendered[index];
+  const next = rendered[index + 1];
+  const currentEndsAt = current.atMs + current.durationMs;
+  const availableGap = next.atMs - currentEndsAt;
+  if (availableGap < MIN_GAP_MS) {
+    const overlapMs = Math.max(0, -availableGap);
+    throw new Error(
+      `Narration timing collision: ${current.anchor} -> ${next.anchor}; overlap=${overlapMs}ms, gap=${availableGap}ms, requiredGap=${MIN_GAP_MS}ms`
+    );
+  }
 }
 
 const ffmpegArgs = ["-y"];
