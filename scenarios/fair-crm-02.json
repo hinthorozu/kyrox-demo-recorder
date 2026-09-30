@@ -46,7 +46,15 @@
       },
       {
         "anchor": "scene-created",
-        "text": "Sahnemiz hazır. U Stand duvarları, on metreye beş metre aktif alan, karolaj zemin, iki metreye bir metre depo ve seçtiğimiz depo içerikleri otomatik olarak oluşturuldu."
+        "text": "Sahnemiz hazır. U Stand duvarları, on metreye beş metre aktif alan, karolaj zemin ve iki metreye bir metre depo otomatik olarak oluşturuldu."
+      },
+      {
+        "anchor": "depot-top-view",
+        "text": "Depo içeriğini daha net görmek için üstten görünüme geçiyoruz. Mini buzdolabı, kettle, askılık ve çöp kutusu deponun içinde otomatik olarak yerleştirilmiş durumda."
+      },
+      {
+        "anchor": "final-home-view",
+        "text": "Genel görünüme dönüyoruz. Sahnemiz artık tasarıma başlamaya hazır."
       }
     ]
   }
