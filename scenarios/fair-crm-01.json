@@ -1,0 +1,42 @@
+{
+  "id": "fair-crm-01",
+  "title": "Müşteriden Stand Projesine",
+  "language": "tr-TR",
+  "visualTemplate": "kyrox-orange-v1",
+  "sourceVideo": "fair-crm-01-musteri-proje-sahne.webm",
+  "finalVideo": "fair-crm-01-musteri-proje-sahne.mp4",
+  "voiceover": {
+    "enabled": false,
+    "file": "voiceover/fair-crm-01.mp3",
+    "segments": [
+      {
+        "anchor": "login-ready",
+        "text": "FAIR CRM'e giriş yaparak başlayalım. E-posta adresimiz ve şifremizle hesabımıza giriş yapıyoruz."
+      },
+      {
+        "anchor": "customers-open",
+        "text": "Yeni bir stand projesi oluşturmak için öncelikle Müşteriler bölümüne geçiyoruz."
+      },
+      {
+        "anchor": "customer-form-open",
+        "text": "Yeni Müşteri butonuna tıklayıp müşterimizi oluşturuyoruz. Bu örnekte Kyrox Studio Ar-Ge Hizmetleri Anonim Şirketi müşterisini kullanıyoruz."
+      },
+      {
+        "anchor": "customer-saved",
+        "text": "Müşterimizi kaydettikten sonra müşteri detay ekranına geçiyoruz."
+      },
+      {
+        "anchor": "stands-open",
+        "text": "Standlar sekmesinden bu müşteriye ait stand projelerini yönetebiliriz."
+      },
+      {
+        "anchor": "new-project",
+        "text": "Yeni Proje butonuna tıklıyoruz. Sistem projeyi otomatik olarak açık olan müşteriye bağlıyor ve stand tasarım ekranını açıyor."
+      },
+      {
+        "anchor": "scene-ready",
+        "text": "Stand tasarım sahnemiz artık hazır. Bir sonraki adımda standımızı oluşturmaya başlayacağız."
+      }
+    ]
+  }
+}
