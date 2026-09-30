@@ -194,7 +194,7 @@ try {
   }
   await clickFocus(page, uStand, { strong: true, holdMs: 800 });
   mark("stand-type-selected");
-  await pause(page, 6500);
+  await pause(page, 6700);
 
   await fillFocus(page, frame.locator("#stand-size-x"), "1000");
   await fillFocus(page, frame.locator("#stand-size-y"), "500");
@@ -248,20 +248,20 @@ try {
   await pause(page, 12500);
 
   // Show the automatically created depot contents using the application's real camera shortcuts.
-  await viewport.click({ position: { x: 700, y: 400 } });
-  await viewport.press("o");
+  const sceneBody = frame.locator("body");
+  await sceneBody.press("o");
   await pause(page, 500);
-  await viewport.press("t");
+  await sceneBody.press("t");
   await pause(page, 1000);
   mark("depot-top-view");
   await showFocus(page, viewport, { strong: true, holdMs: 900 });
   await clearFocus(page);
-  await pause(page, 9000);
+  await pause(page, 9500);
 
   // Return to the normal perspective/home view for the closing shot.
-  await viewport.press("h");
+  await sceneBody.press("h");
   await pause(page, 450);
-  await viewport.press("p");
+  await sceneBody.press("p");
   await pause(page, 900);
   mark("final-home-view");
   await pause(page, 5200);
