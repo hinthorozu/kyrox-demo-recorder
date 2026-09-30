@@ -1,0 +1,27 @@
+name: Cleanup Demo Artifacts
+
+on:
+  push:
+    branches:
+      - ROG
+    paths:
+      - "cleanup-requests/delete-nonfinal-artifacts.txt"
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all workflow artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --paginate             -H "Accept: application/vnd.github+json"             "/repos/${{ github.repository }}/actions/artifacts?per_page=100"             --jq '.artifacts[].id' |
+          while read -r artifact_id; do
+            [ -z "$artifact_id" ] && continue
+            echo "Deleting artifact $artifact_id"
+            gh api --method DELETE               -H "Accept: application/vnd.github+json"               "/repos/${{ github.repository }}/actions/artifacts/$artifact_id"
+          done
