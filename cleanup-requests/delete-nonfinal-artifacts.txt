@@ -1,0 +1,1 @@
+Delete all GitHub Actions artifacts. Approved final tutorial videos are preserved permanently as GitHub Release assets.
