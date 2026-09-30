@@ -1,0 +1,45 @@
+name: Publish Approved FAIR CRM Tutorial
+
+on:
+  push:
+    branches:
+      - ROG
+    paths:
+      - "publish-requests/fair-crm-01-approved.txt"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      APPROVED_RUN_ID: "36709594240"
+      RELEASE_TAG: "fair-crm-01-approved"
+      RELEASE_TITLE: "FAIR CRM Tutorial 01 — Approved"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download exact approved artifact
+        run: |
+          mkdir -p approved
+          gh run download "$APPROVED_RUN_ID"             --repo "${{ github.repository }}"             --name fair-crm-demo-video             --dir approved
+
+      - name: Verify approved files
+        run: |
+          test -f approved/fair-crm-01-musteri-proje-sahne.mp4
+          test -f approved/fair-crm-01-musteri-proje-sahne-piper.mp4
+          ls -lh approved/fair-crm-01-musteri-proje-sahne*.mp4
+
+      - name: Publish permanent release assets
+        run: |
+          if gh release view "$RELEASE_TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG"               approved/fair-crm-01-musteri-proje-sahne.mp4               approved/fair-crm-01-musteri-proje-sahne-piper.mp4               --clobber               --repo "${{ github.repository }}"
+          else
+            gh release create "$RELEASE_TAG"               approved/fair-crm-01-musteri-proje-sahne.mp4               approved/fair-crm-01-musteri-proje-sahne-piper.mp4               --title "$RELEASE_TITLE"               --notes "Approved FAIR CRM tutorial video. Contains only the final silent and Piper-voiced MP4 versions from workflow run $APPROVED_RUN_ID."               --repo "${{ github.repository }}"
+          fi
