@@ -177,9 +177,11 @@ try {
   const frame = page.frameLocator('iframe[data-testid="fair-stand-frame"]');
 
   const standSummary = frame.locator("summary.panel-summary").filter({ hasText: "Stand Tipi" });
-  await clickFocus(page, standSummary, { strong: true, holdMs: 800 });
-
   const uStand = frame.locator('[data-stand-type="u-stand"]');
+  const alreadyOpen = await uStand.isVisible().catch(() => false);
+  if (!alreadyOpen) {
+    await clickFocus(page, standSummary, { strong: true, holdMs: 800 });
+  }
   await uStand.waitFor({ state: "visible", timeout: 20000 });
 
   mark("setup-ready");
