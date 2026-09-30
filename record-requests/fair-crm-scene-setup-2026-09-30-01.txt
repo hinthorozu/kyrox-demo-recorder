@@ -1,0 +1,1 @@
+Record FAIR CRM scene setup tutorial: U Stand, 1000x500 cm, Karolaj 100x100, depot enabled, depot size 2x1 m, depot contents enabled, then create scene.
