@@ -240,9 +240,29 @@ try {
   await frame.locator("#stage-result").filter({ hasText: "U Stand" }).waitFor({ state: "visible", timeout: 30000 });
   mark("scene-created");
 
-  await showFocus(page, frame.locator("#viewport"), { strong: true, holdMs: 1000 });
+  const viewport = frame.locator("#viewport");
+  await showFocus(page, viewport, { strong: true, holdMs: 900 });
   await clearFocus(page);
-  await pause(page, 14000);
+  await pause(page, 12500);
+
+  // Show the automatically created depot contents using the application's real camera shortcuts.
+  await viewport.click({ position: { x: 700, y: 400 } });
+  await viewport.press("o");
+  await pause(page, 500);
+  await viewport.press("t");
+  await pause(page, 1000);
+  mark("depot-top-view");
+  await showFocus(page, viewport, { strong: true, holdMs: 900 });
+  await clearFocus(page);
+  await pause(page, 9000);
+
+  // Return to the normal perspective/home view for the closing shot.
+  await viewport.press("h");
+  await pause(page, 450);
+  await viewport.press("p");
+  await pause(page, 900);
+  mark("final-home-view");
+  await pause(page, 5200);
 
   console.log("✓ FAIR CRM sahne oluşturma tutorial tamamlandı");
 } finally {
