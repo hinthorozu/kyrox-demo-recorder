@@ -8,6 +8,7 @@ const DEMO_PASSWORD = process.env.DEMO_PASSWORD;
 const CUSTOMER_NAME = process.env.DEMO_CUSTOMER_NAME || "Kyrox Studio Ar-Ge Hizmetleri A.Ş.";
 const OUTPUT_DIR = path.resolve(process.env.OUTPUT_DIR || "output");
 const OUTPUT_FILE = path.join(OUTPUT_DIR, "fair-crm-01-musteri-proje-sahne.webm");
+const TIMELINE_FILE = path.join(OUTPUT_DIR, "fair-crm-01.timeline.json");
 
 function requireEnv(name, value) {
   if (!value) {
@@ -150,11 +151,20 @@ const context = await browser.newContext({
 
 const page = await context.newPage();
 const video = page.video();
+const recordingStartedAt = Date.now();
+const timelineEvents = [];
+
+function mark(name) {
+  const atMs = Date.now() - recordingStartedAt;
+  timelineEvents.push({ name, atMs });
+  console.log(`◷ ${name} @ ${atMs}ms`);
+}
 
 try {
   console.log(`Opening ${BASE_URL}/login`);
   await page.goto(`${BASE_URL}/login`, { waitUntil: "domcontentloaded", timeout: 30000 });
   await page.getByRole("heading", { name: "Giriş" }).waitFor({ state: "visible", timeout: 15000 });
+  mark("login-ready");
   await pause(page, 1200);
 
   await fillWithHighlight(page.locator("#login-email"), DEMO_EMAIL, "E-posta");
@@ -169,10 +179,12 @@ try {
   await clickVisible(page.getByRole("link", { name: "Müşteriler" }), "Müşteriler");
   await page.waitForURL(/\/customers(?:\/)?$/, { timeout: 20000 });
   await page.getByRole("heading", { name: "Müşteriler" }).waitFor({ state: "visible", timeout: 15000 });
+  mark("customers-open");
   await pause(page, 1100);
 
   await clickVisible(page.getByRole("button", { name: "Yeni Müşteri" }), "Yeni Müşteri", { strong: true });
   await page.getByRole("heading", { name: "Yeni Müşteri" }).waitFor({ state: "visible", timeout: 15000 });
+  mark("customer-form-open");
   await pause(page, 700);
 
   await fillWithHighlight(page.locator("#customer-display-name"), CUSTOMER_NAME, "Müşteri Adı");
@@ -189,10 +201,12 @@ try {
 
   await page.waitForURL(/\/customers\/[^/?#]+$/, { timeout: 30000 });
   await page.getByRole("heading", { name: CUSTOMER_NAME }).waitFor({ state: "visible", timeout: 15000 });
+  mark("customer-saved");
   await pause(page, 1600);
 
   await clickVisible(page.locator("#tab-projects"), "Standlar sekmesi");
   await page.locator("#panel-projects").waitFor({ state: "visible", timeout: 15000 });
+  mark("stands-open");
   await pause(page, 1200);
 
   // FAIR CRM intentionally opens Stand projects in a new tab. For one continuous
@@ -209,12 +223,14 @@ try {
     .locator("#panel-projects .table-toolbar")
     .getByRole("button", { name: "Yeni Proje", exact: true });
   await clickVisible(newProjectButton, "Yeni Proje", { strong: true });
+  mark("new-project");
 
   await page.waitForURL(/\/stand-projects\/new\?customerId=/, { timeout: 30000 });
   await page.getByText("Yeni stand projesi", { exact: true }).waitFor({ state: "visible", timeout: 20000 });
 
   const host = page.locator('[data-testid="fair-stand-host"]');
   await host.waitFor({ state: "visible", timeout: 30000 });
+  mark("scene-ready");
   await pause(page, 5000);
 
   console.log("✓ Fair Stand sahnesi açıldı");
@@ -228,6 +244,16 @@ try {
     await video.saveAs(OUTPUT_FILE);
     console.log(`Video: ${OUTPUT_FILE}`);
   }
+
+  const timeline = {
+    scenarioId: "fair-crm-01",
+    visualTemplate: "kyrox-orange-v1",
+    sourceVideo: path.basename(OUTPUT_FILE),
+    durationMs: Date.now() - recordingStartedAt,
+    events: timelineEvents,
+  };
+  await fs.writeFile(TIMELINE_FILE, JSON.stringify(timeline, null, 2) + "\n", "utf8");
+  console.log(`Timeline: ${TIMELINE_FILE}`);
 
   await browser.close();
 }
