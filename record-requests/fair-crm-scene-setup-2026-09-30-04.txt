@@ -1,0 +1,1 @@
+Re-record FAIR CRM scene setup tutorial after already-open panel stability fix. Include depot top view and 3-second voiced tail.
