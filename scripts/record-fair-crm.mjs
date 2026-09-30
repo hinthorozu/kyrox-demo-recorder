@@ -180,7 +180,7 @@ try {
   await page.waitForURL(/\/customers(?:\/)?$/, { timeout: 20000 });
   await page.getByRole("heading", { name: "Müşteriler" }).waitFor({ state: "visible", timeout: 15000 });
   mark("customers-open");
-  await pause(page, 1100);
+  await pause(page, 3900);
 
   await clickVisible(page.getByRole("button", { name: "Yeni Müşteri" }), "Yeni Müşteri", { strong: true });
   await page.getByRole("heading", { name: "Yeni Müşteri" }).waitFor({ state: "visible", timeout: 15000 });
@@ -202,12 +202,12 @@ try {
   await page.waitForURL(/\/customers\/[^/?#]+$/, { timeout: 30000 });
   await page.getByRole("heading", { name: CUSTOMER_NAME }).waitFor({ state: "visible", timeout: 15000 });
   mark("customer-saved");
-  await pause(page, 1600);
+  await pause(page, 3200);
 
   await clickVisible(page.locator("#tab-projects"), "Standlar sekmesi");
   await page.locator("#panel-projects").waitFor({ state: "visible", timeout: 15000 });
   mark("stands-open");
-  await pause(page, 1200);
+  await pause(page, 3500);
 
   // FAIR CRM intentionally opens Stand projects in a new tab. For one continuous
   // tutorial recording, keep the exact target route but normalize that navigation
@@ -230,8 +230,10 @@ try {
 
   const host = page.locator('[data-testid="fair-stand-host"]');
   await host.waitFor({ state: "visible", timeout: 30000 });
+  // Keep the scene visible while the "Yeni Proje" narration finishes.
+  await pause(page, 8700);
   mark("scene-ready");
-  await pause(page, 5000);
+  await pause(page, 8000);
 
   console.log("✓ Fair Stand sahnesi açıldı");
 } catch (error) {
