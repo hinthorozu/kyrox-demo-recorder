@@ -1,0 +1,97 @@
+name: Record FAIR CRM Scene Setup
+
+on:
+  push:
+    branches:
+      - ROG
+    paths:
+      - "record-requests/fair-crm-scene-setup-*"
+
+permissions:
+  contents: read
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      BASE_URL: https://fuar.kyrox.studio
+      DEMO_EMAIL: ${{ secrets.DEMO_EMAIL }}
+      DEMO_PASSWORD: ${{ secrets.DEMO_PASSWORD }}
+      DEMO_CUSTOMER_NAME: Kyrox Studio Ar-Ge Hizmetleri A.Ş.
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Validate recorder
+        run: npm run check
+
+      - name: Record scene setup tutorial
+        run: npm run record:fair-crm:scene-setup
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Render silent MP4
+        env:
+          SOURCE_VIDEO_FILE: output/fair-crm-02-sahne-olusturma.webm
+          FINAL_OUTPUT_FILE: output/fair-crm-02-sahne-olusturma.mp4
+        run: npm run render:fair-crm
+
+      - name: Install Piper Turkish voice
+        run: |
+          mkdir -p tools/piper
+          curl -L --fail --retry 3 \
+            https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz \
+            -o /tmp/piper.tar.gz
+          tar -xzf /tmp/piper.tar.gz -C tools/piper --strip-components=1
+          curl -L --fail --retry 3 \
+            https://huggingface.co/rhasspy/piper-voices/resolve/main/tr/tr_TR/dfki/medium/tr_TR-dfki-medium.onnx?download=true \
+            -o tools/piper/tr_TR-dfki-medium.onnx
+          curl -L --fail --retry 3 \
+            https://huggingface.co/rhasspy/piper-voices/resolve/main/tr/tr_TR/dfki/medium/tr_TR-dfki-medium.onnx.json?download=true \
+            -o tools/piper/tr_TR-dfki-medium.onnx.json
+          chmod +x tools/piper/piper
+
+      - name: Generate Turkish narration
+        env:
+          SCENARIO_FILE: scenarios/fair-crm-02.json
+          TIMELINE_FILE: output/fair-crm-02.timeline.json
+          VOICE_OUTPUT_FILE: output/voiceover/fair-crm-02-piper.wav
+        run: npm run voice:piper
+
+      - name: Render voiced MP4
+        env:
+          SOURCE_VIDEO_FILE: output/fair-crm-02-sahne-olusturma.webm
+          VOICEOVER_FILE: output/voiceover/fair-crm-02-piper.wav
+          FINAL_OUTPUT_FILE: output/fair-crm-02-sahne-olusturma-piper.mp4
+        run: npm run render:fair-crm
+
+      - name: Upload tutorial
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fair-crm-scene-setup-video
+          path: |
+            output/fair-crm-02-sahne-olusturma.webm
+            output/fair-crm-02-sahne-olusturma.mp4
+            output/fair-crm-02-sahne-olusturma-piper.mp4
+            output/fair-crm-02.timeline.json
+            output/voiceover/fair-crm-02-piper.wav
+          if-no-files-found: error
+          retention-days: 7
