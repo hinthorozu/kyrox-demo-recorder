@@ -80,6 +80,7 @@ jobs:
           SOURCE_VIDEO_FILE: output/fair-crm-02-sahne-olusturma.webm
           VOICEOVER_FILE: output/voiceover/fair-crm-02-piper.wav
           FINAL_OUTPUT_FILE: output/fair-crm-02-sahne-olusturma-piper.mp4
+          VOICEOVER_TAIL_SECONDS: "3"
         run: npm run render:fair-crm
 
       - name: Upload tutorial
