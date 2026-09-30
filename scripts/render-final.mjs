@@ -4,7 +4,7 @@ import path from "node:path";
 
 const OUTPUT_DIR = path.resolve(process.env.OUTPUT_DIR || "output");
 const INPUT = path.join(OUTPUT_DIR, "fair-crm-01-musteri-proje-sahne.webm");
-const OUTPUT = path.join(OUTPUT_DIR, "fair-crm-01-musteri-proje-sahne.mp4");
+const OUTPUT = path.resolve(process.env.FINAL_OUTPUT_FILE || path.join(OUTPUT_DIR, "fair-crm-01-musteri-proje-sahne.mp4"));
 const VOICEOVER_FILE = process.env.VOICEOVER_FILE ? path.resolve(process.env.VOICEOVER_FILE) : null;
 
 async function exists(file) {
