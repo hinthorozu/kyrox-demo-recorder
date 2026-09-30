@@ -51,6 +51,30 @@ jobs:
       - name: Render final MP4
         run: npm run render:fair-crm
 
+      - name: Install Piper Turkish voice
+        run: |
+          mkdir -p tools/piper
+          curl -L --fail --retry 3 \
+            https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz \
+            -o /tmp/piper.tar.gz
+          tar -xzf /tmp/piper.tar.gz -C tools/piper --strip-components=1
+          curl -L --fail --retry 3 \
+            https://huggingface.co/rhasspy/piper-voices/resolve/main/tr/tr_TR/dfki/medium/tr_TR-dfki-medium.onnx?download=true \
+            -o tools/piper/tr_TR-dfki-medium.onnx
+          curl -L --fail --retry 3 \
+            https://huggingface.co/rhasspy/piper-voices/resolve/main/tr/tr_TR/dfki/medium/tr_TR-dfki-medium.onnx.json?download=true \
+            -o tools/piper/tr_TR-dfki-medium.onnx.json
+          chmod +x tools/piper/piper
+
+      - name: Generate free Turkish voiceover
+        run: npm run voice:piper
+
+      - name: Render voiced MP4
+        env:
+          VOICEOVER_FILE: output/voiceover/fair-crm-01-piper.wav
+          FINAL_OUTPUT_FILE: output/fair-crm-01-musteri-proje-sahne-piper.mp4
+        run: npm run render:fair-crm
+
       - name: Upload video
         if: always()
         uses: actions/upload-artifact@v4
@@ -60,5 +84,6 @@ jobs:
             output/*.webm
             output/*.mp4
             output/*.json
+            output/voiceover/*.wav
           if-no-files-found: error
           retention-days: 7
