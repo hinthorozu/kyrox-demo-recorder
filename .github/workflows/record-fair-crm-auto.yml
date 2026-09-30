@@ -42,8 +42,11 @@ jobs:
       - name: Record demo
         run: npm run record:fair-crm
 
-      - name: Check FFmpeg
-        run: ffmpeg -version
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version
 
       - name: Render final MP4
         run: npm run render:fair-crm
