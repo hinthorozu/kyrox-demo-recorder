@@ -4,11 +4,11 @@ import path from "node:path";
 
 const OUTPUT_DIR = path.resolve(process.env.OUTPUT_DIR || "output");
 const SCENARIO_FILE = path.resolve(process.env.SCENARIO_FILE || "scenarios/fair-crm-01.json");
-const TIMELINE_FILE = path.join(OUTPUT_DIR, "fair-crm-01.timeline.json");
+const TIMELINE_FILE = path.resolve(process.env.TIMELINE_FILE || path.join(OUTPUT_DIR, "fair-crm-01.timeline.json"));
 const PIPER_BIN = path.resolve(process.env.PIPER_BIN || "tools/piper/piper");
 const PIPER_MODEL = path.resolve(process.env.PIPER_MODEL || "tools/piper/tr_TR-dfki-medium.onnx");
 const VOICE_DIR = path.join(OUTPUT_DIR, "voiceover");
-const MIXED_VOICE = path.join(VOICE_DIR, "fair-crm-01-piper.wav");
+const MIXED_VOICE = path.resolve(process.env.VOICE_OUTPUT_FILE || path.join(VOICE_DIR, "fair-crm-01-piper.wav"));
 
 function run(command, args, input = null) {
   return new Promise((resolve, reject) => {
