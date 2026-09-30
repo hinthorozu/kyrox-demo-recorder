@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "record:fair-crm": "node scripts/record-fair-crm.mjs",
-    "check": "node --check scripts/record-fair-crm.mjs"
+    "check": "node --check scripts/record-fair-crm.mjs && node --check scripts/render-final.mjs",
+    "render:fair-crm": "node scripts/render-final.mjs"
   },
   "dependencies": {
     "playwright": "1.49.1"
