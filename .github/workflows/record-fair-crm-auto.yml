@@ -42,11 +42,20 @@ jobs:
       - name: Record demo
         run: npm run record:fair-crm
 
+      - name: Check FFmpeg
+        run: ffmpeg -version
+
+      - name: Render final MP4
+        run: npm run render:fair-crm
+
       - name: Upload video
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: fair-crm-demo-video
-          path: output/*.webm
+          path: |
+            output/*.webm
+            output/*.mp4
+            output/*.json
           if-no-files-found: error
           retention-days: 7
